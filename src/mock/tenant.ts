@@ -3,7 +3,7 @@ import { Tenant } from "@/types";
 export const mockTenant: Tenant = {
     id: "t1",
     business_name: "AutoShine Detailers",
-    phone: "447700900000", // International format without +
+    phone: "2349121834644", // International format without +
     theme_color: "#3b82f6", // Blue-500
     rating: 5.0,
     services: [
