@@ -3,7 +3,7 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
+import { z } from 'zod';
 import { FormField } from '@/types';
 import { cn } from '@/utils/cn';
 import { motion } from 'framer-motion';
@@ -16,13 +16,11 @@ interface DynamicFormProps {
 
 export const DynamicForm: React.FC<DynamicFormProps> = ({ fields, onSubmit, isLoading }) => {
     // Build Zod schema dynamically
-    const schemaShape: Record<string, z.ZodTypeAny> = {};
+    const schemaShape: Record<string, z.ZodType<string, any, any>> = {};
     fields.forEach((field) => {
         let fieldSchema = z.string();
         if (field.required) {
             fieldSchema = fieldSchema.min(1, `${field.label} is required`);
-        } else {
-            // fieldSchema = fieldSchema.optional(); // This causes issues with empty strings
         }
 
         if (field.type === 'email') {
@@ -40,7 +38,12 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({ fields, onSubmit, isLo
         formState: { errors },
     } = useForm({
         resolver: zodResolver(schema),
+        defaultValues: fields.reduce((acc, field) => ({
+            ...acc,
+            [field.id]: '',
+        }), {} as Record<string, string>),
     });
+
 
     return (
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5 px-4 mt-8 pb-32">
